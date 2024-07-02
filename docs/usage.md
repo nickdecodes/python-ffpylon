@@ -1,7 +1,7 @@
 Usage
 
 ```python
->>> from mediakit import ffmpeg, ffprobe
+>>> from ffpylon import ffmpeg, ffprobe
 >>>
 ```
 

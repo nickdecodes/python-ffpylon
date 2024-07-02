@@ -1,8 +1,17 @@
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
-name = "mediakit"
+name = "ffpylon"
 authors = [{name = "nickdecodes", email = "nickdecodes@163.com"}]
-dynamic = ["version", "description"]
+dynamic = [
+    "urls",
+    "version",
+    "description",
+    "dependencies",
+    "readme",
+    "keywords",
+    "requires-python",
+]
+license = {file = "LICENSE"}

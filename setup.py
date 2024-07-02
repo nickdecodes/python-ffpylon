@@ -12,26 +12,33 @@
 
 from setuptools import setup, find_packages
 
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
+
+def readme():
+    with open("README.md", "r", encoding="utf-8") as f:
+        return f.read()
+
 
 setup(
-    name='mediakit',
+    name='ffpylon',
     version='0.1',
-    keywords=['mediakit', 'ffmpeg'],
+    keywords=['ffpylon', 'ffmpeg'],
     packages=find_packages(),
     package_data={"": ["LICENSE", "NOTICE"]},
     include_package_data=True,
     author="nickdecodes",
     author_email="nickdecodes@163.com",
-    description="Media Kit Package",
-    long_description=long_description,
+    description="FFPylon Package",
+    long_description=readme(),
     long_description_content_type="text/markdown",
     python_requires=">=3.9",
     install_requires=[
+        'twine',
+        'build',
+        'installer'
     ],
     project_urls={
-        "Documentation": "http://python-mediakit.readthedocs.io",
-        "Source": "https://github.com/nickdecodes/python-mediakit",
+        "Documentation": "http://python-ffpylon.readthedocs.io",
+        "Source": "https://github.com/nickdecodes/python-ffpylon",
     },
+    license='Apache License 2.0'
 )

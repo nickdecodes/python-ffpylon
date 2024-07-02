@@ -1,4 +1,4 @@
-site_name: MediaKit
+site_name: FFPylon
 theme:
   name: readthedocs
   highlightjs: true
