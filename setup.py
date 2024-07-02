@@ -29,17 +29,6 @@ setup(
     long_description_content_type="text/markdown",
     python_requires=">=3.9",
     install_requires=[
-        'selenium>=4.11.2',
-        'webdriver_manager>=4.0.0',
-        'pandas>=2.0.3',
-        'numpy>=1.24.3',
-        'statsmodels>=0.14.0',
-        'Pillow>=9.5.0',
-        'scikit-learn>=1.3.2',
-        'pmdarima>=2.0.4',
-        'pywavelets>=1.6.0',
-        'requests',
-        'twine'
     ],
     project_urls={
         "Documentation": "http://python-mediakit.readthedocs.io",
