@@ -14,8 +14,8 @@ from base import Base
 
 
 class FFmpeg(Base):
-    def __init__(self, bin_path='ffmpeg', app_log=None):
-        super(FFmpeg).__init__(bin_path=bin_path, app_log=app_log)
+    def __init__(self, bin_path='ffmpeg', logger=None):
+        super(FFmpeg).__init__(bin_path=bin_path, logger=logger)
 
     # audio
 

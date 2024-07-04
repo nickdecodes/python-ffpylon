@@ -10,10 +10,10 @@
 @SoftWare: 
 """
 
-from typing import Tuple, List, Union, Iterable
-import time
-import logging
 import subprocess
+import logging
+import time
+from typing import Union, Iterable, Tuple
 
 
 class Base:
@@ -25,26 +25,26 @@ class Base:
         logger (logging.Logger): The logger object for logging messages.
     """
 
-    def __init__(self, bin_path: str = 'ffmpeg', app_log=None) -> None:
+    def __init__(self, bin_path: str = 'ffmpeg', logger=None) -> None:
         """
         Initialize the Base class.
 
         Args:
-            bin_path (str): The path to the binary executable. Defaults to '/usr/bin/ffmpeg'.
+            bin_path (str): The path to the binary executable. Defaults to 'ffmpeg'.
         """
         self.bin_path = bin_path
-        if app_log is None:
+        if logger is None:
             self.logger = logging.getLogger(__name__)
             logging.basicConfig(level=logging.INFO)
         else:
-            self.logger = app_log
+            self.logger = logger
 
     def reload(self, bin_path: str = 'ffmpeg') -> None:
         self.bin_path = bin_path
 
     def run(
             self,
-            cmd: Union[Iterable[str], str],
+            command: Union[Iterable[str], str],
             timeout: int = None,
             retries: int = 0,
             delay: int = 1,
@@ -54,7 +54,7 @@ class Base:
         Run command with retry logic.
 
         Args:
-            cmd (Union[Iterable[str], str]): The command and its arguments as a list of strings or a single string.
+            command (Union[Iterable[str], str]): The command and its arguments as a list of strings or a single string.
             timeout (int): The timeout in seconds. If the command takes longer than this, it will be terminated.
             retries (int): The number of times to retry the command in case of failure.
             delay (int): The delay in seconds between retries.
@@ -64,22 +64,25 @@ class Base:
             Tuple[int, Union[None, str], Union[None, str]]: A tuple containing the return code, the standard output,
             and the standard error output of the command.
         """
-        if isinstance(cmd, str):
-            _cmd = cmd.split() if alone else [self.bin_path] + cmd.split()
+        if isinstance(command, str):
+            _command = command.split() if alone else [self.bin_path] + command.split()
         else:
-            _cmd = cmd if alone else [self.bin_path, *cmd]
+            _command = command if alone else [self.bin_path, *command]
 
         attempt = 0
         while attempt <= retries:
-            self.logger.info(f"Running command: {' '.join(_cmd)} (Attempt {attempt + 1})")
+            self.logger.info(f"Running command: {' '.join(_command)} (Attempt {attempt + 1})")
             try:
                 result = subprocess.run(
-                    _cmd,
-                    stdin=subprocess.PIPE,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    timeout=timeout,
-                    encoding='utf-8'
+                    _command,  # The command to run, as a list of strings.
+                    text=True,  # Capture output as text (not bytes).
+                    check=True,  # Raise CalledProcessError if command exits with a non-zero status.
+                    stdin=subprocess.PIPE,  # Use a pipe for the standard input.
+                    stdout=subprocess.PIPE,  # Use a pipe for the standard output.
+                    stderr=subprocess.PIPE,  # Use a pipe for the standard error output.
+                    timeout=timeout,  # Timeout for the command in seconds.
+                    encoding='utf-8',  # Use UTF-8 encoding for the output.
+                    errors='replace'  # Replace errors in the output with a placeholder character.
                 )
 
                 # Check if the command was successful. If so, return the result.
@@ -110,3 +113,12 @@ class Base:
                 time.sleep(delay)
 
         return -1, None, "All retries failed."
+
+
+# 使用示例
+if __name__ == "__main__":
+    base = Base()
+    # ret, out, err = base.run(['-version'], retries=2, delay=2)
+    # ret, out, err = base.run('-version', retries=2, delay=2)
+    ret, out, err = base.run('ffmpeg -version', retries=2, delay=2, alone=True)
+    print(f'ret:\n{ret}\nout:\n{out}\nerr:\n{err}')
