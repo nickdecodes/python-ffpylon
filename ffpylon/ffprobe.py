@@ -15,12 +15,14 @@ import os
 import json
 from typing import Tuple, List, Union, Iterable, Dict
 from .ffprobe_options import FFProbeOptions
+from .exec import CommandExecutor
 
 
-class FFprobe(FFProbeOptions):
+class FFprobe(CommandExecutor, FFProbeOptions):
     def __init__(self, bin_path='ffprobe', logger=None):
-        super(FFprobe).__init__(bin_path=bin_path, logger=logger)
+        super().__init__(bin_path=bin_path, logger=logger)
         self.commands = []
+
     # audio
     def get_audio_codec_name(
             self,
@@ -29,12 +31,6 @@ class FFprobe(FFProbeOptions):
             retries: int = 0,
             delay: int = 1,
     ):
-        self.i(input_file)
-        self.v('panic')
-        self.select_streams('A:0')
-        self.show_entries('stream=codec_name')
-        self.of('csv=p=0:nk=1')
-        self.run()
         command = f'-v panic -select_streams A:0 -show_entries stream=codec_name -of csv=p=0:nk=1 {input_file}'
         ret, out, err = self.run(command=command, timeout=timeout, retries=retries, delay=delay)
         return out.strip()

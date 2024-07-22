@@ -11,11 +11,13 @@
 """
 
 from .ffmpeg_options import FFmpegOptions
+from .exec import CommandExecutor
 
 
-class FFmpeg(FFmpegOptions):
+class FFmpeg(CommandExecutor, FFmpegOptions):
     def __init__(self, bin_path='ffmpeg', logger=None):
-        super(FFmpeg).__init__(bin_path=bin_path, logger=logger)
+        super().__init__(bin_path=bin_path, logger=logger)
+        self.commands = []
 
     # audio
 

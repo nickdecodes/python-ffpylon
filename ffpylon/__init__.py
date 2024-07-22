@@ -10,7 +10,7 @@
 @SoftWare: 
 """
 
-from ffmpeg import FFmpeg
-from ffprobe import FFprobe
+from .ffmpeg import FFmpeg
+from .ffprobe import FFprobe
 
 __all__ = ['FFmpeg', 'FFprobe']

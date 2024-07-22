@@ -38,7 +38,6 @@ class CommandExecutor:
             logging.basicConfig(level=logging.INFO)
         else:
             self.logger = logger
-        self.commands = []
 
     def rebin(self, bin_path: str = 'ffmpeg') -> None:
         """
@@ -77,7 +76,6 @@ class CommandExecutor:
                 _command = command.split() if alone else [self.bin_path] + command.split()
             else:
                 _command = command if alone else [self.bin_path, *command]
-        print(_command)
 
         attempt = 0
         while attempt <= retries:

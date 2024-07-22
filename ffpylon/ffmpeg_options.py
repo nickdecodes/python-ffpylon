@@ -12,10 +12,9 @@
 
 
 from .meta import OptionMeta
-from .exec import CommandExecutor
 
 
-class FFmpegOptions(CommandExecutor, metaclass=OptionMeta):
+class FFmpegOptions(metaclass=OptionMeta):
     """
     https://ffmpeg.org/ffmpeg.html
     """
