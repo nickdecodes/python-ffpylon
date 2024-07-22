@@ -5,20 +5,20 @@
 @Author  : nickdecodes
 @Email   : nickdecodes@163.com
 @Usage   :
-@FileName: base.py
-@DateTime: 2024/7/2 14:10
+@FileName: exec.py
+@DateTime: 2024/7/19 12:08
 @SoftWare: 
 """
 
-import subprocess
-import logging
 import time
+import logging
+import subprocess
 from typing import Union, Iterable, Tuple
 
 
-class Base:
+class CommandExecutor:
     """
-    A base class.
+    A command executor class.
 
     Attributes:
         bin_path (str): The path to the binary executable.
@@ -27,7 +27,7 @@ class Base:
 
     def __init__(self, bin_path: str = 'ffmpeg', logger=None) -> None:
         """
-        Initialize the Base class.
+        Initialize the Command Executor class.
 
         Args:
             bin_path (str): The path to the binary executable. Defaults to 'ffmpeg'.
@@ -38,20 +38,26 @@ class Base:
             logging.basicConfig(level=logging.INFO)
         else:
             self.logger = logger
+        self.commands = []
 
-    def reload(self, bin_path: str = 'ffmpeg') -> None:
+    def rebin(self, bin_path: str = 'ffmpeg') -> None:
+        """
+        reload binary executable. set new path
+        :param bin_path: str: The path to the binary executable. Defaults to 'ffmpeg'.
+        :return:
+        """
         self.bin_path = bin_path
 
     def run(
             self,
-            command: Union[Iterable[str], str],
+            command: Union[Iterable[str], str] = None,
             timeout: int = None,
             retries: int = 0,
             delay: int = 1,
             alone: bool = False
     ) -> Tuple[int, Union[None, str], Union[None, str]]:
         """
-        Run command with retry logic.
+        execute command with retry logic.
 
         Args:
             command (Union[Iterable[str], str]): The command and its arguments as a list of strings or a single string.
@@ -64,14 +70,18 @@ class Base:
             Tuple[int, Union[None, str], Union[None, str]]: A tuple containing the return code, the standard output,
             and the standard error output of the command.
         """
-        if isinstance(command, str):
-            _command = command.split() if alone else [self.bin_path] + command.split()
+        if len(self.commands) > 0:
+            _command = command if alone else [self.bin_path, *self.commands]
         else:
-            _command = command if alone else [self.bin_path, *command]
+            if isinstance(command, str):
+                _command = command.split() if alone else [self.bin_path] + command.split()
+            else:
+                _command = command if alone else [self.bin_path, *command]
+        print(_command)
 
         attempt = 0
         while attempt <= retries:
-            self.logger.info(f"Running command: {' '.join(_command)} (Attempt {attempt + 1})")
+            self.logger.info(f"Executing command: {' '.join(_command)} (Attempt {attempt + 1})")
             try:
                 result = subprocess.run(
                     _command,  # The command to run, as a list of strings.
@@ -114,11 +124,3 @@ class Base:
 
         return -1, None, "All retries failed."
 
-
-# 使用示例
-if __name__ == "__main__":
-    base = Base()
-    # ret, out, err = base.run(['-version'], retries=2, delay=2)
-    # ret, out, err = base.run('-version', retries=2, delay=2)
-    ret, out, err = base.run('ffmpeg -version', retries=2, delay=2, alone=True)
-    print(f'ret:\n{ret}\nout:\n{out}\nerr:\n{err}')

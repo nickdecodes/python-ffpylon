@@ -10,10 +10,10 @@
 @SoftWare: 
 """
 
-from base import Base
+from .ffmpeg_options import FFmpegOptions
 
 
-class FFmpeg(Base):
+class FFmpeg(FFmpegOptions):
     def __init__(self, bin_path='ffmpeg', logger=None):
         super(FFmpeg).__init__(bin_path=bin_path, logger=logger)
 
